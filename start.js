@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 const { statuses, build, release, prefix, token, footerTxt } = require('./config.json');
 
 const embedFooter = {
-  "icon_url": "https://cdn.discordapp.com/attachments/549707869138714635/793524910172667964/Screenshot_26.png",
+  "icon_url": message.author.displayAvatarURL(),
   "text": footerTxt
 }
 
