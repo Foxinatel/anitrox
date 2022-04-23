@@ -1,0 +1,29 @@
+{
+  "name": "projectanitrox",
+  "version": "1.0.0",
+  "description": "Discord Bot Based on Discord.JS",
+  "main": "start.ts",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "eslint": "^8.14.0",
+    "node-os-utils": "^1.3.2",
+    "require-all": "^3.0.0",
+    "ts-node": "^10.7.0",
+    "typescript-eslint": "^0.0.1-alpha.0"
+  },
+  "author": "IDeletedSystem64",
+  "license": "ISC",
+  "scripts": {
+    "start": "ts-node start.ts",
+    "eslint": "eslint start.ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.1.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "typescript": "^4.6.3"
+  }
+}
