@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from './types/ClientWrapper';
 import { Command } from './types/Command';
 
 import fs from 'fs';
@@ -8,18 +7,17 @@ import config from './config.json';
 console.log('Starting!');
 const client = new Discord.Client({ intents: config.intents.map((intent: string) => eval(`Discord.Intents.FLAGS.${intent}`)) });
 
-const instance: ClientWrapper = {
-  client,
-  commands: new Discord.Collection(
-    fs.readdirSync('./commands')
-      .filter((file: string) => file.endsWith('.ts'))
-      .map((file: string) => {
-        const command: Command = require(`./commands/${file}`);
-        return [command.name, command];
-      })
-  ),
-  config: require('./config.json'),
-  generateErrorMessage: (errorMsg: string, avatarURL: string) => new Discord.MessageEmbed({
+client.commands = new Discord.Collection(
+  fs.readdirSync('./commands')
+    .filter((file: string) => file.endsWith('.ts'))
+    .map((file: string) => {
+      const command: Command = require(`./commands/${file}`);
+      return [command.name, command];
+    })
+);
+
+client.generateErrorMessage = (errorMsg: string, avatarURL: string): Discord.MessageOptions => ({
+  embeds: [{
     title: '<:AnitroxError:809651936563429416> Error',
     color: 13632027,
     footer: {
@@ -32,8 +30,10 @@ const instance: ClientWrapper = {
         value: errorMsg
       }
     ]
-  })
-};
+  }]
+});
+
+client.config = require('./config.json');
 
 client.on('error', (e: Error) => console.log(`[ERROR] ${e}`));
 client.on('warn', (e: string) => console.log(`[WARN] ${e}`));
@@ -65,7 +65,7 @@ client.once('ready', async () => {
     }
   }
 
-  instance.commands.forEach(async command => {
+  client.commands.forEach(async (command: Discord.ApplicationCommandDataResolvable) => {
     if (sandboxSettings.enabled && !existingLocal?.map(x => x.name).includes(command.name)) {
       await localCommands?.create(command);
       // console.log(`created new local command ${command.name}`);
@@ -99,10 +99,10 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(config.prefix.length).split(/\s+/);
   const command = args.shift()?.toLowerCase() ?? '';
 
-  if (!instance.commands.has(command)) return;
+  if (!client.commands.has(command)) return;
 
   try {
-    await instance.commands.get(command)?.handleMessage(instance, message, args);
+    await client.commands.get(command)?.handleMessage(client, message, args);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.log(error);
@@ -118,13 +118,15 @@ client.on('messageCreate', async (message) => {
         }]
       });
     } else {
-      console.log("Caught a value that isn't an instance of an error:\n" + error);
+      console.log("Caught a value that isn't an client of an error:\n" + error);
     }
   }
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (interaction.isApplicationCommand()) { await instance.commands.get(interaction.commandName)?.handleInteraction(instance, interaction as Discord.CommandInteraction); }
+  if (interaction.isApplicationCommand()) {
+    await client.commands.get(interaction.commandName)?.handleInteraction(client, interaction as Discord.CommandInteraction);
+  }
 });
 
 client.login(config.token);

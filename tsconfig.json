@@ -15,7 +15,8 @@
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
         "typeRoots": [
-            "node_modules/@types"
+            "node_modules/@types",
+            "types/*.ts"
         ],
         "sourceMap": false,
         "baseUrl": "./"
@@ -24,8 +25,8 @@
         "start.ts",
     ],
     "include": [
-        "commands/*.ts",
-        "types/*.ts"
+        "commands/**/*.ts",
+        "types/**/*.ts"
     ],
     "exclude": [
         "node_modules",

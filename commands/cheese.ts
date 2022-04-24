@@ -1,26 +1,25 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
-
-  name: require('path').parse(__filename).name,
-  description: 'Cheese a user, or run with no arguments for a surprise :eyes:',
-  options: [{
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Cheese a user, or run with no arguments for a surprise :eyes:';
+  options = [{
     name: 'user',
     description: 'The user to cheese',
     required: false,
     type: Discord.Constants.ApplicationCommandOptionTypes.USER
-  }],
+  }];
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
-    return message.channel.send(this.handle(instance, message.author, message.mentions.users.first()));
-  },
+  async handleMessage (client: Discord.Client, message: Discord.Message) {
+    await message.channel.send(this.handle(client, message.author, message.mentions.users.first() ?? null));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user, interaction.options.getUser('user')));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user, interaction.options.getUser('user')));
+  }
 
-  handle (instance: ClientWrapper, user: Discord.User, target: Discord.User) {
+  handle (client: Discord.Client, user: Discord.User, target: Discord.User | null): Discord.MessageOptions | string {
     if (!target) return '*slams cheese on desk*\n**Cheese.** https://www.youtube.com/watch?v=Or4IE8fkpn4';
 
     return {
@@ -30,7 +29,7 @@ module.exports = {
         color: 16312092,
         footer: {
           icon_url: user.displayAvatarURL(),
-          text: instance.config.footerTxt
+          text: client.config.footerTxt
         },
         image: {
           url: 'https://cdn.discordapp.com/attachments/803658122299572255/812867714368536636/R06325af354168febcafd96b8328b7590.png'
@@ -38,4 +37,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

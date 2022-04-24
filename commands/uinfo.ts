@@ -1,35 +1,34 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
-
-  name: require('path').parse(__filename).name,
-  description: 'Gets info about an user, such as ID, Discord Join date and more',
-  options: [{
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Gets info about an user, such as ID, Discord Join date and more';
+  options = [{
     name: 'user',
     description: 'Another user',
     required: false,
     type: Discord.Constants.ApplicationCommandOptionTypes.USER
-  }],
+  }];
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
+  handleMessage (client: Discord.Client, message: Discord.Message) {
     const target = message.mentions.members?.first() || message.member;
-    return message.channel.send(this.handle(instance, message.author, target));
-  },
+    return message.channel.send(this.handle(client, message.author, target as Discord.GuildMember));
+  }
 
-  async handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
     const target = interaction.options.getUser('user') ? (await interaction.guild?.members.fetch(interaction.options.getUser('user') ?? '')) : interaction.member;
-    return interaction.reply(this.handle(instance, interaction.user, target));
-  },
+    return interaction.reply(this.handle(client, interaction.user, target as Discord.GuildMember));
+  }
 
-  handle (instance: ClientWrapper, user: Discord.User, target: Discord.GuildMember) {
+  handle (client: Discord.Client, user: Discord.User, target: Discord.GuildMember): Discord.MessageOptions {
     return {
       embeds: [{
         title: `Everything you've ever wanted to know about ${target}!`,
         color: 9442302,
         footer: {
           icon_url: user.displayAvatarURL(),
-          text: instance.config.footerTxt
+          text: client.config.footerTxt
         },
         thumbnail: {
           url: target.displayAvatarURL()
@@ -56,7 +55,7 @@ module.exports = {
           },
           {
             name: 'User Status',
-            value: target.presence?.status ?? (instance.config.intents.includes('GUILD_PRESENCES') ? 'Offline' : 'Missing GUILD_PRESENCES intent')
+            value: target.presence?.status ?? (client.config.intents.includes('GUILD_PRESENCES') ? 'Offline' : 'Missing GUILD_PRESENCES intent')
           },
           {
             name: 'User ID',
@@ -71,4 +70,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

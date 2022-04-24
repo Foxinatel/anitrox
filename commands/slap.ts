@@ -1,27 +1,26 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
-
-  name: require('path').parse(__filename).name,
-  description: 'Slaps a user!',
-  options: [{
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Slaps a user!';
+  options = [{
     name: 'user',
     description: 'The user to slap',
     required: true,
     type: Discord.Constants.ApplicationCommandOptionTypes.USER
-  }],
+  }];
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
-    return message.channel.send(this.handle(instance, message.author, message.mentions.users.first()));
-  },
+  handleMessage (client: Discord.Client, message: Discord.Message) {
+    return message.channel.send(this.handle(client, message.author, message.mentions.users.first() ?? null));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user, interaction.options.getUser('user')));
-  },
+  handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    return interaction.reply(this.handle(client, interaction.user, interaction.options.getUser('user')));
+  }
 
-  handle (instance: ClientWrapper, user: Discord.User, target: Discord.User) {
-    if (!target) return instance.generateErrorMessage('You need to @mention a user!', user.displayAvatarURL());
+  handle (client: Discord.Client, user: Discord.User, target: Discord.User | null): Discord.MessageOptions {
+    if (!target) return client.generateErrorMessage('You need to @mention a user!', user.displayAvatarURL());
     return {
       embeds: [{
         title: ':anger: Slap',
@@ -29,7 +28,7 @@ module.exports = {
         color: 9442302,
         footer: {
           icon_url: user.displayAvatarURL(),
-          text: instance.config.footerTxt
+          text: client.config.footerTxt
         },
         image: {
           url: 'https://media1.tenor.com/images/b6d8a83eb652a30b95e87cf96a21e007/tenor.gif?itemid=10426943'
@@ -37,4 +36,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

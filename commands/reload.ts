@@ -1,34 +1,32 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
-
-  name: require('path').parse(__filename).name,
-  description: 'Reloads a command',
-  options: [...Array(10).keys()].map(i => ({
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Reloads a command';
+  options = [...Array(10).keys()].map(i => ({
     name: `option${i + 1}`,
     description: 'Another option',
     required: i === 0,
     type: Discord.Constants.ApplicationCommandOptionTypes.STRING
-  })),
+  }));
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message, args: string[]) {
-    return message.channel.send(this.handle(instance, message.author, args));
-  },
+  async handleMessage (client: Discord.Client, message: Discord.Message, args: string[]) {
+    await message.channel.send(this.handle(client, message.author, args));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user, [...Array(10).keys()].map(i => interaction.options.getString(`option${i + 1}`)).filter(str => str)));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user, [...Array(10).keys()].map(i => interaction.options.getString(`option${i + 1}`) ?? '').filter(str => str)));
+  }
 
-  handle (instance: ClientWrapper, user: Discord.User, args: string[]) {
-    if (user.id === instance.config.ownerID) {
-      if (!args.length) return instance.generateErrorMessage('You forgot to provide anything to reload, you pillock', user.displayAvatarURL());
+  handle (client: Discord.Client, user: Discord.User, args: string[]): Discord.MessageOptions | string {
+    if (user.id === client.config.ownerID) {
+      if (!args.length) return client.generateErrorMessage('You forgot to provide anything to reload, you pillock', user.displayAvatarURL());
       let returnMessage = '';
 
       args.forEach(async (arg) => {
         const commandName = arg?.toLowerCase();
-        const command = instance.commands.get(commandName) ||
-          instance.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        const command = client.commands.get(commandName);
 
         if (!command) {
           returnMessage += `There is no command with name or alias \`${commandName}\`\n`;
@@ -37,7 +35,7 @@ module.exports = {
 
           try {
             const newCommand = require(`./${command.name}.ts`);
-            instance.commands.set(newCommand.name, newCommand);
+            client.commands.set(newCommand.name, newCommand);
             returnMessage += `Successfully reloaded \`${commandName}\`\n`;
             console.log(`User reloaded ${command.name}.`);
           } catch (error) {
@@ -55,7 +53,7 @@ module.exports = {
           color: 13632027,
           footer: {
             icon_url: user.displayAvatarURL(),
-            text: instance.config.footerTxt
+            text: client.config.footerTxt
           },
           fields: [
             {
@@ -67,4 +65,4 @@ module.exports = {
       };
     }
   }
-};
+}();

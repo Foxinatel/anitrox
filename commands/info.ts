@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
 function Uptime (uptime: number) {
   const totalSeconds = (uptime / 1000);
@@ -17,26 +17,24 @@ function Uptime (uptime: number) {
   return `${daystring}**, **${hourstring}**, **${minutetring}**, **${secondstring}`;
 }
 
-module.exports = {
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Shows bot and host information';
+  options = [];
 
-  name: require('path').parse(__filename).name,
-  description: 'Shows bot and host information',
-  options: [],
+  async handleMessage (client: Discord.Client, message: Discord.Message) {
+    await message.channel.send(this.handle(client, message.author));
+  }
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
-    return message.channel.send(this.handle(instance, message.author));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user));
-  },
-
-  handle (instance: ClientWrapper, user: Discord.User) {
+  handle (client: Discord.Client, user: Discord.User): Discord.MessageOptions {
     const os = require('os');
     const osu = require('node-os-utils');
     const cpu = osu.cpu;
-    const config = instance.config;
-    const client = instance.client;
+    const config = client.config;
 
     return {
       embeds: [{
@@ -77,7 +75,7 @@ module.exports = {
           },
           {
             name: 'Bot Name',
-            value: client.user?.tag,
+            value: client.user?.tag ?? 'Value returned undefined',
             inline: true
           },
           {
@@ -119,4 +117,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

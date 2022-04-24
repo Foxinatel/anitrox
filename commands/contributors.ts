@@ -1,21 +1,20 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Attributions to open source components used by Anitrox';
+  options = [];
 
-  name: require('path').parse(__filename).name,
-  description: 'Attributions to open source components used by Anitrox',
-  options: [],
+  async handleMessage (client: Discord.Client, message: Discord.Message) {
+    await message.channel.send(this.handle(client, message.author));
+  }
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
-    return message.channel.send(this.handle(instance, message.author));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user));
-  },
-
-  handle (instance: ClientWrapper, user: Discord.User) {
+  handle (client: Discord.Client, user: Discord.User): Discord.MessageOptions {
     return {
       embeds: [{
         title: 'Contributors',
@@ -23,7 +22,7 @@ module.exports = {
         color: 52508,
         footer: {
           icon_url: user.displayAvatarURL(),
-          text: instance.config.footerTxt
+          text: client.config.footerTxt
         },
         thumbnail: {
           url: 'https://cdn.discordapp.com/emojis/809651812323164192.webp?size=128&quality=lossless'
@@ -45,4 +44,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

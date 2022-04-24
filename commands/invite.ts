@@ -1,29 +1,28 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Add Anitrox to your beautiful server!';
+  options = [];
 
-  name: require('path').parse(__filename).name,
-  description: 'Add Anitrox to your beautiful server!',
-  options: [],
+  async handleMessage (client: Discord.Client, message: Discord.Message) {
+    await message.channel.send(this.handle(client, message.author));
+  }
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message, args: string[]) {
-    return message.channel.send(this.handle(instance, message.author, args.slice(0).join(' ')));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user, interaction.options.getString('question')));
-  },
-
-  handle (instance: ClientWrapper, user: Discord.User) {
+  handle (client: Discord.Client, user: Discord.User | null): Discord.MessageOptions {
     return {
       embeds: [{
         title: 'Add Anitrox to your Server!',
         description: 'Weather you want stable, or that squeaky clean fresh PTB build, we gotchu.',
         color: 9442302,
         footer: {
-          icon_url: user.displayAvatarURL(),
-          text: instance.config.footerTxt
+          icon_url: user?.displayAvatarURL(),
+          text: client.config.footerTxt
         },
         thumbnail: {
           url: 'https://cdn.discordapp.com/attachments/803658122299572255/814352905394061322/anitroxaddsrvr.png'
@@ -45,4 +44,4 @@ module.exports = {
       }]
     };
   }
-};
+}();

@@ -1,10 +1,10 @@
-import { Client, CommandInteraction, Message, User } from 'discord.js';
+import { Client, CommandInteraction, Message } from 'discord.js';
+import './Client';
 
 export interface Command {
   name: string,
   description: string,
-  options: Array<ApplicationCommandData>
-  handleMessage: (instance: ClientWrapper, message: Message, args: string[]) => Promise<Message>
-  handleInteraction: (client: Client, config: (typeof conf), message: CommandInteraction) => Promise<Message>
-  handler: (client: Client, config: (typeof conf), user: User, args: unknown) => Message
+  options: Array<ApplicationCommand>
+  handleMessage: (client: Client, message: Message, args: string[]) => Promise<void> | Promise<Message>
+  handleInteraction: (client: Client, message: CommandInteraction) => Promise<void>
 }

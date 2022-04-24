@@ -1,21 +1,20 @@
 import * as Discord from 'discord.js';
-import { ClientWrapper } from '../types/ClientWrapper';
+import { Command } from 'types/Command';
 
-module.exports = {
+module.exports = new class implements Command {
+  name = require('path').parse(__filename).name;
+  description = 'Get help on anything from commands, to what the bot does! just not your homework..';
+  options = [];
 
-  name: require('path').parse(__filename).name,
-  description: 'Get help on anything from commands, to what the bot does! just not your homework..',
-  options: [],
+  async handleMessage (client: Discord.Client, message: Discord.Message) {
+    await message.channel.send(this.handle(client, message.author));
+  }
 
-  handleMessage (instance: ClientWrapper, message: Discord.Message) {
-    return message.channel.send(this.handle(instance, message.author));
-  },
+  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+    await interaction.reply(this.handle(client, interaction.user));
+  }
 
-  handleInteraction (instance: ClientWrapper, interaction: Discord.CommandInteraction) {
-    return interaction.reply(this.handle(instance, interaction.user));
-  },
-
-  handle (instance: ClientWrapper, user: Discord.User) {
+  handle (client: Discord.Client, user: Discord.User): Discord.MessageOptions {
     return {
       embeds: [{
         title: 'HELP! SEYMOUR! THE BOT IS ON FIRE!',
@@ -23,7 +22,7 @@ module.exports = {
         color: 9442302,
         footer: {
           icon_url: user.displayAvatarURL(),
-          text: `${instance.config.footerTxt} | No mother it's just the northern lights`
+          text: `${client.config.footerTxt} | No mother it's just the northern lights`
         },
         fields: [
           {
@@ -38,4 +37,4 @@ module.exports = {
       }]
     };
   }
-};
+}();
