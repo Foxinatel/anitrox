@@ -7,6 +7,8 @@ import config from './config.json';
 console.log('Starting!');
 const client = new Discord.Client({ intents: config.intents.map((intent: string) => eval(`Discord.Intents.FLAGS.${intent}`)) });
 
+client.config = config;
+
 client.commands = new Discord.Collection(
   fs.readdirSync('./commands')
     .filter((file: string) => file.endsWith('.ts'))
@@ -32,8 +34,6 @@ client.generateErrorMessage = (errorMsg: string, avatarURL: string): Discord.Mes
     ]
   }]
 });
-
-client.config = require('./config.json');
 
 client.on('error', (e: Error) => console.log(`[ERROR] ${e}`));
 client.on('warn', (e: string) => console.log(`[WARN] ${e}`));
