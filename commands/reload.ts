@@ -1,25 +1,25 @@
-import * as Discord from 'discord.js';
+import { ApplicationCommandOptionData, Client, CommandInteraction, Constants, Message, MessageOptions, User } from 'discord.js';
 import { Command } from 'types/Command';
 
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Reloads a command';
-  options = [...Array(10).keys()].map(i => ({
+  options: ApplicationCommandOptionData[] = [...Array(10).keys()].map(i => ({
     name: `option${i + 1}`,
     description: 'Another option',
     required: i === 0,
-    type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+    type: Constants.ApplicationCommandOptionTypes.STRING
   }));
 
-  async handleMessage (client: Discord.Client, message: Discord.Message, args: string[]) {
+  async handleMessage (client: Client, message: Message, args: string[]) {
     await message.channel.send(this.handle(client, message.author, args));
   }
 
-  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Client, interaction: CommandInteraction) {
     await interaction.reply(this.handle(client, interaction.user, [...Array(10).keys()].map(i => interaction.options.getString(`option${i + 1}`) ?? '').filter(str => str)));
   }
 
-  handle (client: Discord.Client, user: Discord.User, args: string[]): Discord.MessageOptions | string {
+  handle (client: Client, user: User, args: string[]): MessageOptions | string {
     if (user.id === client.config.ownerID) {
       if (!args.length) return client.generateErrorMessage('You forgot to provide anything to reload, you pillock', user.displayAvatarURL());
       let returnMessage = '';

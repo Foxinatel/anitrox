@@ -1,20 +1,20 @@
-import * as Discord from 'discord.js';
+import { Client, Message, CommandInteraction, User, MessageOptions, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Add Anitrox to your beautiful server!';
-  options = [];
+  options: ApplicationCommandOptionData[] = [];
 
-  async handleMessage (client: Discord.Client, message: Discord.Message) {
+  async handleMessage (client: Client, message: Message) {
     await message.channel.send(this.handle(client, message.author));
   }
 
-  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Client, interaction: CommandInteraction) {
     await interaction.reply(this.handle(client, interaction.user));
   }
 
-  handle (client: Discord.Client, user: Discord.User | null): Discord.MessageOptions {
+  handle (client: Client, user: User | null): MessageOptions {
     return {
       embeds: [{
         title: 'Add Anitrox to your Server!',
@@ -30,15 +30,15 @@ module.exports = new class implements Command {
         fields: [
           {
             name: 'Anitrox',
-            value: 'Get the ripe off the vine Anitrox! \n [Add Anitrox to your server](https://discord.com/oauth2/authorize?client_id=576805923964715018&scope=bot&permissions=8)'
+            value: 'Get the ripe off the vine Anitrox! \n [Add Anitrox to your server](https://com/oauth2/authorize?client_id=576805923964715018&scope=bot&permissions=8)'
           },
           {
             name: 'Anitrox PTB (Public Test Build)',
-            value: 'So you want the fresh and hot builds straight from the oven? We gotchu \n [Add Anitrox PTB to your server](https://discord.com/oauth2/authorize?client_id=489125054261755925&scope=bot&permissions=66186303)'
+            value: 'So you want the fresh and hot builds straight from the oven? We gotchu \n [Add Anitrox PTB to your server](https://com/oauth2/authorize?client_id=489125054261755925&scope=bot&permissions=66186303)'
           },
           {
             name: 'Need help?',
-            value: 'Come join the Anitrox Support Server, for support and much more!\n [Anitrox Support Server](https://discord.gg/grebRGsBZ3)'
+            value: 'Come join the Anitrox Support Server, for support and much more!\n [Anitrox Support Server](https://gg/grebRGsBZ3)'
           }
         ]
       }]

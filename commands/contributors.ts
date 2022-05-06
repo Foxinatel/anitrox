@@ -1,20 +1,20 @@
-import * as Discord from 'discord.js';
+import { Client, Message, CommandInteraction, User, MessageOptions, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Attributions to open source components used by Anitrox';
-  options = [];
+  options: ApplicationCommandOptionData[] = [];
 
-  async handleMessage (client: Discord.Client, message: Discord.Message) {
+  async handleMessage (client: Client, message: Message) {
     await message.channel.send(this.handle(client, message.author));
   }
 
-  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Client, interaction: CommandInteraction) {
     await interaction.reply(this.handle(client, interaction.user));
   }
 
-  handle (client: Discord.Client, user: Discord.User): Discord.MessageOptions {
+  handle (client: Client, user: User): MessageOptions {
     return {
       embeds: [{
         title: 'Contributors',

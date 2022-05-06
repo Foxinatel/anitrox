@@ -1,4 +1,4 @@
-import * as Discord from 'discord.js';
+import { Constants, Client, Message, CommandInteraction, User, MessageOptions, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 const gifchoices = [
@@ -10,22 +10,22 @@ const gifchoices = [
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Snuggle a user!';
-  options = [{
+  options: ApplicationCommandOptionData[] = [{
     name: 'user',
     description: 'The user to snuggle',
     required: true,
-    type: Discord.Constants.ApplicationCommandOptionTypes.USER
+    type: Constants.ApplicationCommandOptionTypes.USER
   }];
 
-  handleMessage (client: Discord.Client, message: Discord.Message) {
+  handleMessage (client: Client, message: Message) {
     return message.channel.send(this.handle(client, message.author, message.mentions.users.first() ?? null));
   }
 
-  handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  handleInteraction (client: Client, interaction: CommandInteraction) {
     return interaction.reply(this.handle(client, interaction.user, interaction.options.getUser('user')));
   }
 
-  handle (client: Discord.Client, user: Discord.User, target: Discord.User | null): Discord.MessageOptions {
+  handle (client: Client, user: User, target: User | null): MessageOptions {
     if (!target) return client.generateErrorMessage('You need to @mention a user!', user.displayAvatarURL());
 
     const gif = gifchoices[Math.floor(Math.random() * gifchoices.length)];

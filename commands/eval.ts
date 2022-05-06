@@ -1,4 +1,4 @@
-import * as Discord from 'discord.js';
+import { Constants, Client, Message, CommandInteraction, User, MessageOptions, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 const { inspect } = require('util');
@@ -6,24 +6,24 @@ const { inspect } = require('util');
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'handles JS code';
-  options = [{
+  options: ApplicationCommandOptionData[] = [{
     name: 'code',
     description: 'The string to evaluate',
     required: true,
-    type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+    type: Constants.ApplicationCommandOptionTypes.STRING
   }];
 
-  async handleMessage (client: Discord.Client, message: Discord.Message, args: string[]) {
+  async handleMessage (client: Client, message: Message, args: string[]) {
     const response = this.handle(client, message.author, args.join(' '));
     if (response) await message.channel.send(response);
   }
 
-  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Client, interaction: CommandInteraction) {
     const response = this.handle(client, interaction.user, interaction.options.getString('code'));
     if (response) await interaction.reply(response);
   }
 
-  handle (client: Discord.Client, user: Discord.User, code: string | null): Discord.MessageOptions | string | null {
+  handle (client: Client, user: User, code: string | null): MessageOptions | string | null {
     if (user.id === client.config.ownerID) {
       try {
         const evaled = inspect(eval(code ?? ''));

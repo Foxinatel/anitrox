@@ -1,25 +1,25 @@
-import * as Discord from 'discord.js';
+import { Constants, Client, Message, CommandInteraction, User, MessageOptions, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Cheese a user, or run with no arguments for a surprise :eyes:';
-  options = [{
+  options: ApplicationCommandOptionData[] = [{
     name: 'user',
     description: 'The user to cheese',
     required: false,
-    type: Discord.Constants.ApplicationCommandOptionTypes.USER
+    type: Constants.ApplicationCommandOptionTypes.USER
   }];
 
-  async handleMessage (client: Discord.Client, message: Discord.Message) {
+  async handleMessage (client: Client, message: Message) {
     await message.channel.send(this.handle(client, message.author, message.mentions.users.first() ?? null));
   }
 
-  async handleInteraction (client: Discord.Client, interaction: Discord.CommandInteraction) {
+  async handleInteraction (client: Client, interaction: CommandInteraction) {
     await interaction.reply(this.handle(client, interaction.user, interaction.options.getUser('user')));
   }
 
-  handle (client: Discord.Client, user: Discord.User, target: Discord.User | null): Discord.MessageOptions | string {
+  handle (client: Client, user: User, target: User | null): MessageOptions | string {
     if (!target) return '*slams cheese on desk*\n**Cheese.** https://www.youtube.com/watch?v=Or4IE8fkpn4';
 
     return {

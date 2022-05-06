@@ -1,21 +1,21 @@
-import * as Discord from 'discord.js';
+import { Constants, Client, Message, CommandInteraction, ApplicationCommandOptionData } from 'discord.js';
 import { Command } from 'types/Command';
 
 module.exports = new class implements Command {
   name = require('path').parse(__filename).name;
   description = 'Sets your nickname';
-  options = [{
+  options: ApplicationCommandOptionData[] = [{
     name: 'name',
     description: 'The new nickname',
     required: true,
-    type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+    type: Constants.ApplicationCommandOptionTypes.STRING
   }];
 
-  handleMessage (_client: Discord.Client, message: Discord.Message) {
+  handleMessage (_client: Client, message: Message) {
     return message.channel.send(this.handle());
   }
 
-  handleInteraction (_client: Discord.Client, interaction: Discord.CommandInteraction) {
+  handleInteraction (_client: Client, interaction: CommandInteraction) {
     return interaction.reply(this.handle());
   }
 
