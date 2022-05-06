@@ -11,14 +11,14 @@ client.config = config;
 
 client.commands = new Discord.Collection(
   fs.readdirSync('./commands')
-    .filter((file: string) => file.endsWith('.ts'))
-    .map((file: string) => {
+    .filter(file => file.endsWith('.ts'))
+    .map(file => {
       const command: Command = require(`./commands/${file}`);
       return [command.name, command];
     })
 );
 
-client.generateErrorMessage = (errorMsg: string, avatarURL: string): Discord.MessageOptions => ({
+client.generateErrorMessage = (errorMsg, avatarURL): Discord.MessageOptions => ({
   embeds: [{
     title: '<:AnitroxError:809651936563429416> Error',
     color: 13632027,
@@ -35,20 +35,18 @@ client.generateErrorMessage = (errorMsg: string, avatarURL: string): Discord.Mes
   }]
 });
 
-client.on('error', (e: Error) => console.log(`[ERROR] ${e}`));
-client.on('warn', (e: string) => console.log(`[WARN] ${e}`));
+client.on('error', e => console.log(`[ERROR] ${e}`));
+client.on('warn', e => console.log(`[WARN] ${e}`));
 
 client.once('ready', async () => {
   const sandboxSettings = config.sandbox;
-  const localCommands: Discord.GuildApplicationCommandManager | undefined = client.guilds.cache.get(sandboxSettings.id)?.commands;
-  const globalCommands: Discord.ApplicationCommandManager | undefined = client.application?.commands;
-  let existingLocal: Discord.Collection<Discord.Snowflake, Discord.ApplicationCommand> | undefined =
-    await localCommands?.fetch();
-  let existingGlobal: Discord.Collection<Discord.Snowflake, Discord.ApplicationCommand> | undefined =
-    await globalCommands?.fetch();
+  const localCommands = client.guilds.cache.get(sandboxSettings.id)?.commands;
+  const globalCommands = client.application?.commands;
+  let existingLocal = await localCommands?.fetch();
+  let existingGlobal = await globalCommands?.fetch();
 
   if (sandboxSettings.enabled) {
-    if (sandboxSettings.refreshLocal) {
+    if (sandboxSettings.refreshLocal && localCommands) {
       console.log('deleting previous local commands');
       existingLocal?.forEach(async (x) => {
         await localCommands?.delete(x);
@@ -65,7 +63,7 @@ client.once('ready', async () => {
     }
   }
 
-  client.commands.forEach(async (command: Discord.ApplicationCommandDataResolvable) => {
+  client.commands.forEach(async (command) => {
     if (sandboxSettings.enabled && !existingLocal?.map(x => x.name).includes(command.name)) {
       await localCommands?.create(command);
       // console.log(`created new local command ${command.name}`);
@@ -105,7 +103,7 @@ client.on('messageCreate', async (message) => {
     await client.commands.get(command)?.handleMessage(client, message, args);
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.log(error);
+      console.error(error);
       message.channel.send({
         embeds: [{
           title: '<:AnitroxError:809651936563429416> **Something went wrong!**',
@@ -118,7 +116,7 @@ client.on('messageCreate', async (message) => {
         }]
       });
     } else {
-      console.log("Caught a value that isn't an client of an error:\n" + error);
+      console.error("Caught a value that isn't an instance of an error:\n" + error);
     }
   }
 });
