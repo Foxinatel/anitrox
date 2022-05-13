@@ -59,6 +59,7 @@ module.exports = new class implements Command {
     type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND
   }];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleMessage (client: Client, message: Message, args: string[]) {
     await message.channel.send('Currently this feature only works with slash commands!');
   }

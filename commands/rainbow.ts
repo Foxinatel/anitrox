@@ -1,4 +1,4 @@
-import { ApplicationCommandManager, ApplicationCommandOptionData, Client, CommandInteraction, Constants, Message, MessageOptions, User } from 'discord.js';
+import { ApplicationCommandOptionData, Client, CommandInteraction, Constants, Message } from 'discord.js';
 import { Command } from 'types/Command';
 
 const ansiCodes = ['31', '33', '32', '34'];
