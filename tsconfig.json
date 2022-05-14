@@ -26,6 +26,7 @@
     ],
     "include": [
         "commands/**/*.ts",
+        "events/**/*.ts",
         "types/**/*.ts"
     ],
 }
