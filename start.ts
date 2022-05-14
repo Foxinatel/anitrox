@@ -20,9 +20,9 @@ client.commands = new Discord.Collection(
 
 fs.readdirSync('./events')
   .filter(file => file.endsWith('.ts'))
-  .forEach(file => {
-    const event: ClientEvent = require(`./events/${file}`);
-    client[event.once ? 'once' : 'on'](event.event, event.listener(client));
+  .map((file):ClientEvent => require(`./events/${file}`))
+  .forEach(({ once, event, listener }) => {
+    client[once ? 'once' : 'on'](event as keyof Discord.ClientEvents, listener(client));
   });
 
 client.generateErrorMessage = (errorMsg, avatarURL): Discord.MessageOptions => ({

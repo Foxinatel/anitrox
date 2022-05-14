@@ -1,7 +1,7 @@
 import { Client, ClientEvents } from 'discord.js';
 
-export interface ClientEvent {
-  once?: bool = false,
-  event: keyof ClientEvents,
-  listener: (client: Client) => ((...args: any) => Promise<Void>)
+export interface ClientEvent<Event extends keyof ClientEvents = unknown> {
+  once?: bool;
+  event: Event;
+  listener: (client: Client) => (...args: ClientEvents[Event]) => Promise<void>;
 }

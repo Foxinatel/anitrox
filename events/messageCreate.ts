@@ -1,8 +1,8 @@
 import { Client, Message } from 'discord.js';
 import { ClientEvent } from 'types/ClientEvent';
 
-module.exports = new class implements ClientEvent {
-  event = require('path').parse(__filename).name;
+module.exports = new class implements ClientEvent<'messageCreate'> {
+  event: 'messageCreate' = 'messageCreate';
 
   listener = (client: Client) =>
     async (message: Message) => {

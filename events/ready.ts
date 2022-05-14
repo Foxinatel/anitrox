@@ -1,10 +1,9 @@
 import { Client, Collection } from 'discord.js';
 import { ClientEvent } from 'types/ClientEvent';
 
-module.exports = new class implements ClientEvent {
+module.exports = new class implements ClientEvent<'ready'> {
+  event: 'ready' = 'ready';
   once = true;
-
-  event = require('path').parse(__filename).name;
 
   listener = (client: Client) => {
     const config = client.config;
