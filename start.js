@@ -7,6 +7,10 @@ const config = require('./config.json');
 console.log('Starting!');
 const client = new Discord.Client({ intents: config.intents.map(intent => eval(`Discord.Intents.FLAGS.${intent}`)) });
 
+Array.prototype.get_random = function () {
+  return this[Math.floor((Math.random() * this.length))];
+};
+
 client.commands = new Discord.Collection();
 fs.readdirSync('./commands')
   .filter(file => file.endsWith('.js'))

@@ -20,8 +20,6 @@ module.exports = {
   },
 
   handle (client, config, user, question) {
-    const index = Math.floor(Math.random() * config.answers.length);
-    const answer = config.answers[index];
     const avatarURL = user.displayAvatarURL();
 
     if (!question) return client.generateErrorMessage('You need to ask a question!', avatarURL);
@@ -38,7 +36,7 @@ module.exports = {
         fields: [
           {
             name: 'Answer',
-            value: `${answer}`
+            value: `${config.answers.get_random()}`
           }
         ]
       }]

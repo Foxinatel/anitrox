@@ -13,13 +13,10 @@ module.exports = {
   },
 
   async handle (client, config, user) {
-    const index = Math.floor(Math.random() * config.locations.length);
-    const location = config.locations[index];
-
     return {
       embeds: [{
         title: ':ping_pong: Ping',
-        description: `**Pong!** We pinged **${location}** and got ${client.ws.ping} ms.`,
+        description: `**Pong!** We pinged **${config.locations.get_random()}** and got ${client.ws.ping} ms.`,
         color: 9442302,
         footer: {
           icon_url: user.displayAvatarURL(),

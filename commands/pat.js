@@ -27,7 +27,7 @@ module.exports = {
 
   handle (client, config, user, target) {
     if (!target) return client.generateErrorMessage('You need to @mention a user!', user.displayAvatarURL());
-    const gif = gifchoices[Math.floor(Math.random() * gifchoices.length)];
+
     return {
       embeds: [{
         title: '<:pats:801238281286713355> Pat',
@@ -38,7 +38,7 @@ module.exports = {
           text: config.footerTxt
         },
         image: {
-          url: gif
+          url: gifchoices.get_random()
         }
       }]
     };

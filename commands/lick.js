@@ -28,7 +28,7 @@ module.exports = {
 
   handle (client, config, user, target) {
     if (!target) return client.generateErrorMessage('You need to @mention a user!', user.displayAvatarURL());
-    const gif = gifchoices[Math.floor(Math.random() * gifchoices.length)];
+
     return {
       embeds: [{
         title: '<a:LeafeonLick:806396195089154058> Lick',
@@ -39,7 +39,7 @@ module.exports = {
           text: config.footerTxt
         },
         image: {
-          url: gif
+          url: gifchoices.get_random()
         }
       }]
     };

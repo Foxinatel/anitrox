@@ -12,6 +12,7 @@
     },
     "rules": {
         "no-eval": "off",
-        "semi": [1, "always"]
+        "semi": [1, "always"],
+        "no-extend-native": ["error", { "exceptions": ["Array"] }]
     }
 }

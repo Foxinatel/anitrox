@@ -26,11 +26,10 @@ module.exports = {
   handle (client, config, user, options) {
     if (!options.length) return client.generateErrorMessage('You need to provide some input!', user.displayAvatarURL());
 
-    const answer = options[Math.floor(Math.random() * options.length)];
     return {
       embeds: [{
         title: 'I have made my decision:',
-        description: answer,
+        description: options.get_random(),
         color: 8311585,
         footer: {
           icon_url: user.displayAvatarURL(),
