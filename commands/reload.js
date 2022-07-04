@@ -16,7 +16,7 @@ module.exports = {
   },
 
   async parseInteraction (client, config, interaction) {
-    await interaction.reply(this.handle(client, config, interaction.user, [...Array(10).keys()].map(i => interaction.options.getString(`option${i + 1}`)).filter(str => str)));
+    await interaction.reply(this.handle(client, config, interaction.user, [...Array(10).keys()].map(i => interaction.options.getString(`option${i + 1}`)).filter(Boolean)));
   },
 
   handle (client, config, user, args) {
