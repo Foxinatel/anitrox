@@ -14,7 +14,7 @@ module.exports = {
 
   async handle (client, config, user, channel) {
     if (user.id === config.ownerID) {
-      console.log('[SYSTEM] [INFO] ' + `The bot is going down for shut down. \nShutdown requested by ${user.username}`);
+      console.log('[SYSTEM] [INFO] ' + ` The bot is going down for shut down. \nShutdown requested by ${user.username}`);
       await channel.send({
         embeds: [{
           title: '**Shut down the bot**',
@@ -29,7 +29,7 @@ module.exports = {
       process.exit();
     } else {
       console.error('[SYSTEM] [ERR] User ' + user.username + " tried to shut down the bot, but doesn't have permission! If this was you, Check your config.json");
-      await channel.send(client.generateErrorMessage('You do not have permission to run this command.', user.displayAvatarURL()));
+      await channel.send(client.generateErrorMessage('Only the bot owner can stop the bot! Stop.', user.displayAvatarURL()));
     }
   }
 };

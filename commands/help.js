@@ -12,27 +12,25 @@ module.exports = {
     await interaction.reply(this.handle(client, config, interaction.user));
   },
 
-  handle (_, config, user) {
-    return {
-      embeds: [{
-        title: 'HELP! SEYMOUR! THE BOT IS ON FIRE!',
-        description: 'Get help on anything from commands, to what the bot does! just not your homework..',
-        color: 9442302,
-        footer: {
-          icon_url: user.displayAvatarURL(),
-          text: `${config.footerTxt} | No mother it's just the northern lights`
+  handle: (_, config, user) => ({
+    embeds: [{
+      title: 'HELP! SEYMOUR! THE BOT IS ON FIRE!',
+      description: 'Get help on anything from commands, to what the bot does! just not your homework..',
+      color: 9442302,
+      footer: {
+        icon_url: user.displayAvatarURL(),
+        text: `${config.footerTxt} | No mother it's just the northern lights`
+      },
+      fields: [
+        {
+          name: 'Command List',
+          value: '[Click here!](https://github.com/IDeletedSystem64/anitrox/blob/dev/commands.md)'
         },
-        fields: [
-          {
-            name: 'Command List',
-            value: '[Click here!](https://github.com/IDeletedSystem64/anitrox/blob/dev/commands.md)'
-          },
-          {
-            name: '...Or is the bot actually on fire?',
-            value: 'Join the [support server!](https://discord.gg/grebRGsBZ3)'
-          }
-        ]
-      }]
-    };
-  }
+        {
+          name: '...Or is the bot actually on fire?',
+          value: 'Join the [support server!](https://discord.gg/grebRGsBZ3)'
+        }
+      ]
+    }]
+  })
 };

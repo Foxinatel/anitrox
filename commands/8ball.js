@@ -20,9 +20,7 @@ module.exports = {
   },
 
   handle (client, config, user, question) {
-    const avatarURL = user.displayAvatarURL();
-
-    if (!question) return client.generateErrorMessage('You need to ask a question!', avatarURL);
+    if (!question) return client.generateErrorMessage('You need to ask a question!', user.displayAvatarURL());
 
     return {
       embeds: [{
@@ -30,7 +28,7 @@ module.exports = {
         description: `Your amazing question: **${question}**`,
         color: 9442302,
         footer: {
-          icon_url: avatarURL,
+          icon_url: user.displayAvatarURL(),
           text: config.footerTxt
         },
         fields: [

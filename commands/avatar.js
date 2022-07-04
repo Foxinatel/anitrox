@@ -9,8 +9,7 @@ module.exports = {
     description: 'Another user',
     required: false,
     type: Constants.ApplicationCommandOptionTypes.USER
-  },
-  {
+  }, {
     name: 'userid',
     description: "Another user's ID",
     required: false,
@@ -27,19 +26,17 @@ module.exports = {
     await interaction.reply(this.handle(client, config, interaction.user, target));
   },
 
-  handle (_, config, user, target) {
-    return {
-      embeds: [{
-        title: `:frame_photo: ${target.username}'s Beautiful Avatar!`,
-        color: 9442302,
-        footer: {
-          icon_url: user.displayAvatarURL(),
-          text: config.footerTxt
-        },
-        image: {
-          url: target.displayAvatarURL()
-        }
-      }]
-    };
-  }
+  handle: (_, config, user, target) => ({
+    embeds: [{
+      title: `:frame_photo: ${target.username}'s Beautiful Avatar!`,
+      color: 9442302,
+      footer: {
+        icon_url: user.displayAvatarURL(),
+        text: config.footerTxt
+      },
+      image: {
+        url: target.displayAvatarURL()
+      }
+    }]
+  })
 };
